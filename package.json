@@ -1,0 +1,33 @@
+{
+  "name": "qna-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon server/index.js -w server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Boutique-Design-API/QnA-API.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Boutique-Design-API/QnA-API/issues"
+  },
+  "homepage": "https://github.com/Boutique-Design-API/QnA-API#readme",
+  "dependencies": {
+    "axios": "^0.26.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "mongodb": "^4.4.0",
+    "morgan": "^1.10.0",
+    "pg": "^8.7.3",
+    "postgres": "^1.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
