@@ -18,9 +18,9 @@ router.post('/qa/questions/:question_id/answers', models.postAnswer);
 
 router.put('/qa/questions/:question_id/helpful', models.markQuestionHelpful);
 
-router.put('/qa/questions/:question_id/report', models.reportQuestion);
-
 router.put('/qa/answers/:answer_id/helpful', models.markAnswerHelpful);
+
+router.put('/qa/questions/:question_id/report', models.reportQuestion);
 
 router.put('/qa/answers/:answer_id/report', models.reportAnswer);
 

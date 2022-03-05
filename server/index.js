@@ -1,4 +1,3 @@
-// server
 const express = require('express');
 const morgan = require('morgan');
 const router = require('./router');
