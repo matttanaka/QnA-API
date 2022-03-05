@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon server/index.js -w server",
-    "createdb": "psql postgres < QnA/db/schema.sql"
+    "start:dev": "nodemon server/index.js -w server -w db",
+    "createdb": "psql postgres < db/schema.sql"
   },
   "repository": {
     "type": "git",
