@@ -47,7 +47,7 @@ module.exports = {
                                   FROM
                                     questions
                                   WHERE
-                                    product_id = '1'
+                                    product_id = '${req.query.product_id}'
                                   AND
                                     reported = false
                                   ORDER BY questions.question_id
