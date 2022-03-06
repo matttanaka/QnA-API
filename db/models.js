@@ -54,9 +54,12 @@ module.exports = {
                                   LIMIT ${count}
                                   OFFSET ${count * (page - 1)};`;
     try {
-      // const { rows } = await pool.query(`SELECT * FROM questions WHERE product_id = '${req.query.product_id}';`);
       const { rows } = await pool.query(getAllQuestionsQuery);
-      res.json(rows);
+      const result = {
+        product_id: req.query.product_id,
+        results: rows,
+      };
+      res.json(result);
     } catch (err) {
       res.status(404).send(`Error retrieving questions: ${err.message}`);
     }
@@ -105,8 +108,6 @@ module.exports = {
         count,
         results: rows,
       };
-
-      // for some reason, req.body.page is not being registered***************
 
       res.json(result);
     } catch (err) {
