@@ -74,10 +74,15 @@ CSV HEADER;
 ALTER TABLE answers_photos
 RENAME COLUMN photo_url TO url;
 
-SELECT
+
+-- tells us that the output of to_stamp is "timestamp with timezone"
+SELECT PG_TYPEOF(TO_TIMESTAMP(1599958385988::double precision/1000));
+
+SELECT TO_CHAR(TO_TIMESTAMP(date::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"') AS date_converted FROM answers WHERE answer_id='1';
+
+'2020-09-12 17:53:05.988-07'
+
+'YYYY-MM-DD"T"HH24:MI:SS"Z"'
 
 
--- SELECT questions.question_id, question_body, answers.question_id, body FROM questions INNER JOIN answers ON questions.question_id = answers.question_id;
-
--- Working SELECT query to include custon column 'test_vale' with value of 'hi there':
--- SELECT questions.question_id, question_body, product_id, answers.question_id, body, 'hi there' as test_value FROM questions, answers WHERE questions.question_id = answers.question_id AND product_id='4';
+"2018-01-04T00:00:00.000Z"

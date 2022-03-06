@@ -4,78 +4,103 @@ module.exports = {
 
   /// GET ALL QUESTIONS ///
   getAllQuestions: async (req, res) => {
+    const page = (req.query.page) ? req.query.page : 1;
+    const count = (req.query.count) ? req.query.count : 5;
+    const getAllQuestionsQuery = `SELECT
+                                    questions.question_id,
+                                    question_body,
+                                    question_date,
+                                    asker_name,
+                                    question_helpfulness,
+                                    reported,
+                                    (SELECT JSON_AGG(answers)
+                                    FROM (
+                                      SELECT
+                                        answers.answer_id,
+                                        body,
+                                        TO_CHAR (
+                                          TO_TIMESTAMP(date::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"'
+                                        ) AS date,
+                                        answerer_name,
+                                        helpfulness,
+                                        COALESCE ((
+                                          SELECT JSON_AGG(photos)
+                                          FROM (
+                                            SELECT id, url FROM answers_photos WHERE answers_photos.answer_id = answers.answer_id
+                                          ) AS photos
+                                        ), '[]') AS photos
+                                      FROM
+                                        answers
+                                      WHERE
+                                        answers.question_id = questions.question_id
+                                      AND
+                                        reported = false
+                                    )) AS answers
+                                  FROM
+                                    questions
+                                  WHERE
+                                    product_id = '1'
+                                  AND
+                                    reported = false;
+                                  ORDER BY questions.question_id
+                                  LIMIT ${count}
+                                  OFFSET ${count * (page - 1)};`;
     try {
-      const { rows } = await pool.query(`SELECT * FROM questions WHERE product_id = '${req.query.product_id}';`);
+      // const { rows } = await pool.query(`SELECT * FROM questions WHERE product_id = '${req.query.product_id}';`);
+      const { rows } = await pool.query(getAllQuestionsQuery);
       res.json(rows);
     } catch (err) {
       res.status(404).send(`Error retrieving questions: ${err.message}`);
     }
   },
 
-  /// GET ALL ANSWERS ///
-  getAllAnswers: async (req, res) => {
-    // const getAllAnswersQuery = `SELECT
-    //                               answers.answer_id,
-    //                               body,
-    //                               date,
-    //                               answerer_name,
-    //                               helpfulness,
-    //                               (
-    //                                 SELECT
-    //                                   url
-    //                                 FROM
-    //                                   answers_photos
-    //                                 WHERE
-    //                                   answers_photos.answer_id = answers.answer_id
-    //                               ) AS photos
-    //                             FROM
-    //                               answers
-    //                             WHERE
-    //                               question_id = '${req.params.question_id}'
-    //                             AND
-    //                               reported = false;`;
+  /// GET ALL ANSWERS ///  I think I can use a formula that returns this query with the params.quesiton_id as an input
 
-    // VERY CLOSE TO WHAT I WANT:
+  getAllAnswers: async (req, res) => {
+    const page = (req.query.page) ? req.query.page : 1;
+    const count = (req.query.count) ? req.query.count : 5;
     const getAllAnswersQuery = `SELECT
                                   answers.answer_id,
                                   body,
-                                  date,
+                                  TO_CHAR (
+                                    TO_TIMESTAMP(date::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"'
+                                  ) AS date,
                                   answerer_name,
                                   helpfulness,
-                                  (
-                                    SELECT json_agg(photos)
+                                  COALESCE ((
+                                    SELECT JSON_AGG(photos)
                                     FROM (
-                                      SELECT id, url FROM answers_photos WHERE answers_photos.answer_id = answers.answer_id
+                                      SELECT
+                                        id,
+                                        url
+                                      FROM
+                                        answers_photos
+                                      WHERE
+                                        answers_photos.answer_id = answers.answer_id
                                     ) AS photos
-                                  ) as photos
+                                  ), '[]') AS photos
                                 FROM
                                   answers
                                 WHERE
                                   question_id = '${req.params.question_id}'
                                 AND
-                                  reported = false;`;
+                                  reported = false
+                                ORDER BY answers.answer_id
+                                LIMIT ${count}
+                                OFFSET ${count * (page - 1)};`;
 
-    // const getAllAnswersQuery = `SELECT
-    //                               answers.answer_id,
-    //                               body,
-    //                               date,
-    //                               answerer_name,
-    //                               helpfulness,
-    //                               (
-    //                                 SELECT json_agg(photos)
-    //                                 FROM (
-    //                                   SELECT id, url FROM answers_photos WHERE answers_photos.answer_id = answers.answer_id
-    //                                 ) AS photos
-    //                               ) AS photos
-    //                             FROM
-    //                               answers
-    //                             WHERE
-    //                               question_id = '1'
-    //                             AND
-    //                               reported = false;`;
     try {
       const { rows } = await pool.query(getAllAnswersQuery);
-      res.json(rows);
+      const result = {
+        question: req.params.question_id,
+        page,
+        count,
+        results: rows,
+      };
+
+      // for some reason, req.body.page is not being registered***************
+
+      res.json(result);
     } catch (err) {
       res.status(404).send(`Error retrieving answers: ${err.message}`);
     }
@@ -84,7 +109,8 @@ module.exports = {
   /// POST A QUESTION ///
   postQuestion: (req, res) => {
     const reqInfo = {
-      bodyParams: req.body,
+      bodyParams: req.query,
+      // bodyParams: req.body,
       type: 'post a question',
     };
     res.send(reqInfo);
@@ -139,3 +165,67 @@ module.exports = {
   },
 
 };
+
+// GET ALL ANSWERS TEST QUERIES
+
+// V3.0 figured out how to return [] for null responses
+// const getAllAnswersQuery = `SELECT
+//                                 answers.answer_id,
+//                                 body,
+//                                 date,
+//                                 answerer_name,
+//                                 helpfulness,
+//                                 COALESCE ((
+//                                   SELECT JSON_AGG(photos)
+//                                   FROM (
+//                                     SELECT id, url FROM answers_photos WHERE answers_photos.answer_id = answers.answer_id
+//                                   ) AS photos
+//                                 ), '[]') AS photos
+//                               FROM
+//                                 answers
+//                               WHERE
+//                                 question_id = '${req.params.question_id}'
+//                               AND
+//                                 reported = false;`;
+
+// V2.0 figured out how to put all rows from answers_photos into photos column
+// const getAllAnswersQuery = `SELECT
+//                               answers.answer_id,
+//                               body,
+//                               date,
+//                               answerer_name,
+//                               helpfulness,
+//                               (
+//                                 SELECT json_agg(photos)
+//                                 FROM (
+//                                   SELECT id, url FROM answers_photos WHERE answers_photos.answer_id = answers.answer_id
+//                                 ) AS photos
+//                               ) AS photos
+//                             FROM
+//                               answers
+//                             WHERE
+//                               question_id = '${req.params.question_id}'
+//                             AND
+//                               reported = false;`;
+
+// V1.0: figuring out how to put all rows from answers_photos into photos column
+// const getAllAnswersQuery = `SELECT
+//                               answers.answer_id,
+//                               body,
+//                               date,
+//                               answerer_name,
+//                               helpfulness,
+//                               (
+//                                 SELECT
+//                                   url
+//                                 FROM
+//                                   answers_photos
+//                                 WHERE
+//                                   answers_photos.answer_id = answers.answer_id
+//                               ) AS photos
+//                             FROM
+//                               answers
+//                             WHERE
+//                               question_id = '${req.params.question_id}'
+//                             AND
+//                               reported = false;`;
