@@ -76,13 +76,6 @@ RENAME COLUMN photo_url TO url;
 
 
 -- tells us that the output of to_stamp is "timestamp with timezone"
-SELECT PG_TYPEOF(TO_TIMESTAMP(1599958385988::double precision/1000));
+-- SELECT PG_TYPEOF(TO_TIMESTAMP(1599958385988::double precision/1000));
 
-SELECT TO_CHAR(TO_TIMESTAMP(date::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"') AS date_converted FROM answers WHERE answer_id='1';
-
-'2020-09-12 17:53:05.988-07'
-
-'YYYY-MM-DD"T"HH24:MI:SS"Z"'
-
-
-"2018-01-04T00:00:00.000Z"
+-- SELECT TO_CHAR(TO_TIMESTAMP(date::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"') AS date_converted FROM answers WHERE answer_id='1';

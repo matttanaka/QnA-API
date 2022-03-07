@@ -9,7 +9,9 @@ module.exports = {
     const getAllQuestionsQuery = `SELECT
                                     questions.question_id,
                                     question_body,
-                                    question_date,
+                                      TO_CHAR (
+                                        TO_TIMESTAMP(question_date::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"'
+                                      ) AS question_date,
                                     asker_name,
                                     question_helpfulness,
                                     reported,
