@@ -118,13 +118,31 @@ module.exports = {
   },
 
   /// POST A QUESTION ///
-  postQuestion: (req, res) => {
-    const reqInfo = {
-      bodyParams: req.query,
-      // bodyParams: req.body,
-      type: 'post a question',
-    };
-    res.send(reqInfo);
+  postQuestion: async (req, res) => {
+    const {
+      body, name, email,
+    } = req.body;
+    const productID = req.body.product_id;
+    const date = Date.now();
+
+    const postQuestionQuery = `INSERT INTO
+                                 questions (product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness)
+                               VALUES
+                                 ('${productID}', '${body}', '${date}', '${name}', '${email}', 'f', '0');`;
+
+    try {
+      await pool.query(postQuestionQuery);
+      res.sendStatus(201);
+    } catch (err) {
+      res.status(404).send(`Error adding question: ${err.message}`);
+    }
+
+    // const reqInfo = {
+    //   bodyParams: req.body,
+    //   // bodyParams: req.body,
+    //   type: 'post a question',
+    // };
+    // res.send(reqInfo);
   },
 
   /// POST AN ANSWER ///
@@ -140,7 +158,7 @@ module.exports = {
   /// MARK HELPFUL ///
   markQuestionHelpful: async (req, res) => {
     try {
-      await pool.query(`UPDATE questions SET question_helpfulness = question_helpfulness::integer + 1 WHERE question_id='${req.params.question_id}'`);
+      await pool.query(`UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id='${req.params.question_id}'`);
       res.sendStatus(204);
     } catch (err) {
       res.status(404).send(`Error marking question as helpful: ${err.message}`);
@@ -149,7 +167,7 @@ module.exports = {
 
   markAnswerHelpful: async (req, res) => {
     try {
-      await pool.query(`UPDATE answers SET helpfulness = helpfulness::integer + 1 WHERE answer_id='${req.params.answer_id}'`);
+      await pool.query(`UPDATE answers SET helpfulness = helpfulness + 1 WHERE answer_id='${req.params.answer_id}'`);
       res.sendStatus(204);
     } catch (err) {
       res.status(404).send(`Error marking answer as helpful: ${err.message}`);
@@ -159,7 +177,7 @@ module.exports = {
   /// REPORT ///
   reportQuestion: async (req, res) => {
     try {
-      await pool.query(`UPDATE questions SET reported = true WHERE quesion_id='${req.params.question_id}'`);
+      await pool.query(`UPDATE questions SET reported = true WHERE question_id='${req.params.question_id}'`);
       res.sendStatus(204);
     } catch (err) {
       res.status(404).send(`Error reporting question: ${err.message}`);
