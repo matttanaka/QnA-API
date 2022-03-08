@@ -143,3 +143,40 @@ DROP TABLE answers_photos_temp;
 
 -- INSERT INTO questions_sample (product_id, question_body, date_written, asker_name, asker_email, reported, helpful)
 -- VALUES ('97', 'does this postgres query work?', '1646675075256', 'MST', 'test@test.net', '0', '0');
+
+-- select rtrim(ltrim('["website1.com", "website2.com", "website3.com"]', '['), ']');
+
+
+-- select rtrim(ltrim('["website1.com",
+--     "website2.com",
+--     "website3.com"
+--     ]', '['), ']');
+
+-- select btrim('["website1.com", "website2.com", "website3.com"]', '[]');
+-- select btrim('["website1.com",
+--     "website2.com",
+--     "website3.com"
+--     ]', '[]');
+
+
+
+--     select string_to_array(btrim('["website1.com", "website2.com", "website3.com"]', '[]'), ',');
+
+
+--     select replace(btrim('["website1.com", "website2.com", "website3.com"]', '[]'), '''', '')
+
+
+
+
+
+
+
+
+
+-- select replace(replace(btrim('["website1.com", "website2.com", "website3.com"]', '[]'), '''', ''), '"', '');
+
+-- select string_to_array(replace(replace(btrim('["website1.com", "website2.com", "website3.com"]', '[]'), '''', ''), '"', ''), ', ');
+
+-- select unnest(string_to_array(replace(replace(btrim('["website1.com", "website2.com", "website3.com"]', '[]'), '''', ''), '"', ''), ', '));
+
+-- select json_array_elements_text(["website1.com", "website2.com", "website3.com"]::jsonb);

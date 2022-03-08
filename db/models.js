@@ -160,11 +160,12 @@ module.exports = {
                                  INSERT INTO
                                    answers_photos (answer_id, url)
                                  VALUES
-                                   ((SELECT answer_id FROM insertAns), '${urls}');`;
+                                   ((SELECT answer_id FROM insertAns), unnest(string_to_array(replace(replace(btrim('["website1.com", "website2.com", "website3.com"]', '[]'), '''', ''), '"', ''), ', ')));`;
 
     // SELECT answer_id FROM insertAns, ${urls};`;
     // VALUES
     //   ((SELECT answer_id FROM insertAns), '${urls}')
+    // (SELECT url FROM UNNEST(string_to_array(replace(replace(btrim('${urls}', '[]'), '''', ''), '"', ''), ', ')) url))
     const postAnswerQuery = (urls) ? postAnswerQueryURLs : postAnswerQueryNoURLs;
 
     try {
