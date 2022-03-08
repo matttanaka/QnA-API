@@ -136,23 +136,49 @@ module.exports = {
     } catch (err) {
       res.status(404).send(`Error adding question: ${err.message}`);
     }
-
-    // const reqInfo = {
-    //   bodyParams: req.body,
-    //   // bodyParams: req.body,
-    //   type: 'post a question',
-    // };
-    // res.send(reqInfo);
   },
 
   /// POST AN ANSWER ///
-  postAnswer: (req, res) => {
-    const reqInfo = {
-      urlParams: req.params.question_id,
-      bodyParams: req.body,
-      type: 'post an answer',
-    };
-    res.send(reqInfo);
+  postAnswer: async (req, res) => {
+    const questionId = req.params.question_id;
+    const {
+      body, name, email, urls,
+    } = req.body;
+    const date = Date.now();
+
+    const postAnswerQueryNoURLs = `INSERT INTO
+                                     answers (question_id, body, date, answerer_name, answerer_email, reported, helpfulness)
+                                   VALUES
+                                     ('${questionId}', '${body}', '${date}', '${name}', '${email}', 'f', '0');`;
+    const postAnswerQueryURLs = `WITH insertAns AS (
+                                   INSERT INTO
+                                     answers (question_id, body, date, answerer_name, answerer_email, reported, helpfulness)
+                                   VALUES
+                                     ('${questionId}', '${body}', '${date}', '${name}', '${email}', 'f', '0')
+                                   RETURNING answer_id
+                                   )
+                                 INSERT INTO
+                                   answers_photos (answer_id, url)
+                                 VALUES
+                                   ((SELECT answer_id FROM insertAns), '${urls}');`;
+
+    // SELECT answer_id FROM insertAns, ${urls};`;
+    // VALUES
+    //   ((SELECT answer_id FROM insertAns), '${urls}')
+    const postAnswerQuery = (urls) ? postAnswerQueryURLs : postAnswerQueryNoURLs;
+
+    try {
+      await pool.query(postAnswerQuery);
+      res.sendStatus(201);
+    } catch (err) {
+      res.status(404).send(`Error adding answer: ${err.message}`);
+    }
+    // const reqInfo = {
+    //   urlParams: req.params.question_id,
+    //   bodyParams: req.body,
+    //   type: 'post an answer',
+    // };
+    // res.send(reqInfo);
   },
 
   /// MARK HELPFUL ///
