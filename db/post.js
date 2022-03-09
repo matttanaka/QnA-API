@@ -5,6 +5,7 @@ module.exports = {
     VALUES
       ('${productId}', '${body}', '${date}', '${name}', '${email}', 'f', '0');`
   ),
+
   answer: (questionId, body, date, name, email, urls) => {
     const postAnswerQueryNoURLs = `INSERT INTO
                                      answers (question_id, body, date, answerer_name, answerer_email, reported, helpfulness)

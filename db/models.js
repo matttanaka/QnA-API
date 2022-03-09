@@ -15,7 +15,7 @@ module.exports = {
     try {
       const { rows } = await pool.query(getAllQuestionsQuery);
       const duration = Date.now() - start;
-      console.log('executed query', { getAllQuestionsQuery, duration, rows: rows.length });
+      console.log('executed query', { duration, rows: rows.length });
       const result = {
         product_id: req.query.product_id,
         results: rows,
@@ -36,7 +36,7 @@ module.exports = {
     try {
       const { rows } = await pool.query(getAllAnswersQuery);
       const duration = Date.now() - start;
-      console.log('executed query', { getAllAnswersQuery, duration, rows: rows.length });
+      console.log('executed query', { duration, rows: rows.length });
       const result = {
         question: req.params.question_id,
         page,
@@ -63,7 +63,7 @@ module.exports = {
     try {
       const { rows } = await pool.query(postQuestionQuery);
       const duration = Date.now() - date;
-      console.log('executed query', { postQuestionQuery, duration, rows: rows.length });
+      console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(201);
       // res.status(201).send(rows);
     } catch (err) {
@@ -79,32 +79,12 @@ module.exports = {
     } = req.body;
     const date = Date.now();
 
-    // const postAnswerQueryNoURLs = `INSERT INTO
-    //                                  answers (question_id, body, date, answerer_name, answerer_email, reported, helpfulness)
-    //                                VALUES
-    //                                  ('${questionId}', '${body}', '${date}', '${name}', '${email}', 'f', '0');`;
-
-    // const postAnswerQueryURLs = `EXPLAIN ANALYZE WITH insertAns AS (
-    //                                INSERT INTO
-    //                                  answers (question_id, body, date, answerer_name, answerer_email, reported, helpfulness)
-    //                                VALUES
-    //                                  ('${questionId}', '${body}', '${date}', '${name}', '${email}', 'f', '0')
-    //                                RETURNING answer_id
-    //                                )
-    //                              INSERT INTO
-    //                                answers_photos (answer_id, url)
-    //                              VALUES (
-    //                                (SELECT answer_id FROM insertAns),
-    //                                UNNEST(STRING_TO_ARRAY('${urls}', ','))
-    //                              );`;
-
-    // const postAnswerQuery = (urls) ? postAnswerQueryURLs : postAnswerQueryNoURLs;
     const postAnswerQuery = post.answer(questionId, body, date, name, email, urls);
 
     try {
       const { rows } = await pool.query(postAnswerQuery);
       const duration = Date.now() - date;
-      console.log('executed query', { postAnswerQuery, duration, rows: rows.length });
+      console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(201);
       // res.status(201).send(rows);
     } catch (err) {
@@ -119,7 +99,7 @@ module.exports = {
     try {
       const { rows } = await pool.query(markQuestionHelpfulQuery);
       const duration = Date.now() - start;
-      console.log('executed query', { markQuestionHelpfulQuery, duration, rows: rows.length });
+      console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(204);
       // res.send(rows);
     } catch (err) {
@@ -133,7 +113,7 @@ module.exports = {
     try {
       const { rows } = await pool.query(markAnswerHelpfulQuery);
       const duration = Date.now() - start;
-      console.log('executed query', { markAnswerHelpfulQuery, duration, rows: rows.length });
+      console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(204);
       // res.send(rows);
     } catch (err) {
@@ -148,7 +128,7 @@ module.exports = {
     try {
       const { rows } = await pool.query(reportQuestionQuery);
       const duration = Date.now() - start;
-      console.log('executed query', { reportQuestionQuery, duration, rows: rows.length });
+      console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(204);
       // res.send(rows);
     } catch (err) {
@@ -162,7 +142,7 @@ module.exports = {
     try {
       const { rows } = await pool.query(reportAnswerQuery);
       const duration = Date.now() - start;
-      console.log('executed query', { reportAnswerQuery, duration, rows: rows.length });
+      console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(204);
       // res.send(rows);
     } catch (err) {
