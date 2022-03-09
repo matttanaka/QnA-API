@@ -1,62 +1,21 @@
 const pool = require('./index');
+const get = require('./get');
+const post = require('./post');
 
 module.exports = {
 
   /// GET ALL QUESTIONS ///
   getAllQuestions: async (req, res) => {
-    const page = (req.query.page) ? req.query.page : 1;
+    const productId = req.query.product_id;
     const count = (req.query.count) ? req.query.count : 5;
-    const getAllQuestionsQuery = `SELECT
-                                    questions.question_id,
-                                    question_body,
-                                      TO_CHAR (
-                                        TO_TIMESTAMP(question_date::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"'
-                                      ) AS question_date,
-                                    asker_name,
-                                    question_helpfulness,
-                                    reported,
-                                    COALESCE ((
-                                      SELECT JSON_AGG(answers)
-                                      FROM (
-                                        SELECT
-                                          answers.answer_id,
-                                          body,
-                                          TO_CHAR (
-                                            TO_TIMESTAMP(date::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"'
-                                          ) AS date,
-                                          answerer_name,
-                                          helpfulness,
-                                          COALESCE ((
-                                            SELECT JSON_AGG(photos)
-                                            FROM (
-                                              SELECT
-                                                id,
-                                                url
-                                              FROM
-                                                answers_photos
-                                              WHERE
-                                                answers_photos.answer_id = answers.answer_id
-                                            ) AS photos
-                                          ), '[]') AS photos
-                                        FROM
-                                          answers
-                                        WHERE
-                                          answers.question_id = questions.question_id
-                                        AND
-                                          reported = false
-                                      ) AS answers
-                                    ), '[]') AS answers
-                                  FROM
-                                    questions
-                                  WHERE
-                                    product_id = '${req.query.product_id}'
-                                  AND
-                                    reported = false
-                                  ORDER BY questions.question_id
-                                  LIMIT ${count}
-                                  OFFSET ${count * (page - 1)};`;
+    const page = (req.query.page) ? req.query.page : 1;
+    const getAllQuestionsQuery = get.allQuestions(productId, count, page);
+
+    const start = Date.now();
     try {
       const { rows } = await pool.query(getAllQuestionsQuery);
+      const duration = Date.now() - start;
+      console.log('executed query', { getAllQuestionsQuery, duration, rows: rows.length });
       const result = {
         product_id: req.query.product_id,
         results: rows,
@@ -67,43 +26,17 @@ module.exports = {
     }
   },
 
-  /// GET ALL ANSWERS ///  I think I can use a formula that returns this query with the params.quesiton_id as an input
-
   getAllAnswers: async (req, res) => {
-    const page = (req.query.page) ? req.query.page : 1;
+    const questionId = req.params.question_id;
     const count = (req.query.count) ? req.query.count : 5;
-    const getAllAnswersQuery = `SELECT
-                                  answers.answer_id,
-                                  body,
-                                  TO_CHAR (
-                                    TO_TIMESTAMP(date::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"'
-                                  ) AS date,
-                                  answerer_name,
-                                  helpfulness,
-                                  COALESCE ((
-                                    SELECT JSON_AGG(photos)
-                                    FROM (
-                                      SELECT
-                                        id,
-                                        url
-                                      FROM
-                                        answers_photos
-                                      WHERE
-                                        answers_photos.answer_id = answers.answer_id
-                                    ) AS photos
-                                  ), '[]') AS photos
-                                FROM
-                                  answers
-                                WHERE
-                                  question_id = '${req.params.question_id}'
-                                AND
-                                  reported = false
-                                ORDER BY answers.answer_id
-                                LIMIT ${count}
-                                OFFSET ${count * (page - 1)};`;
+    const page = (req.query.page) ? req.query.page : 1;
+    const getAllAnswersQuery = get.allAnswers(questionId, count, page);
 
+    const start = Date.now();
     try {
       const { rows } = await pool.query(getAllAnswersQuery);
+      const duration = Date.now() - start;
+      console.log('executed query', { getAllAnswersQuery, duration, rows: rows.length });
       const result = {
         question: req.params.question_id,
         page,
@@ -122,17 +55,17 @@ module.exports = {
     const {
       body, name, email,
     } = req.body;
-    const productID = req.body.product_id;
+    const productId = req.body.product_id;
     const date = Date.now();
 
-    const postQuestionQuery = `INSERT INTO
-                                 questions (product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness)
-                               VALUES
-                                 ('${productID}', '${body}', '${date}', '${name}', '${email}', 'f', '0');`;
+    const postQuestionQuery = post.question(productId, body, date, name, email);
 
     try {
-      await pool.query(postQuestionQuery);
+      const { rows } = await pool.query(postQuestionQuery);
+      const duration = Date.now() - date;
+      console.log('executed query', { postQuestionQuery, duration, rows: rows.length });
       res.sendStatus(201);
+      // res.status(201).send(rows);
     } catch (err) {
       res.status(404).send(`Error adding question: ${err.message}`);
     }
@@ -146,56 +79,63 @@ module.exports = {
     } = req.body;
     const date = Date.now();
 
-    const postAnswerQueryNoURLs = `INSERT INTO
-                                     answers (question_id, body, date, answerer_name, answerer_email, reported, helpfulness)
-                                   VALUES
-                                     ('${questionId}', '${body}', '${date}', '${name}', '${email}', 'f', '0');`;
-    const postAnswerQueryURLs = `WITH insertAns AS (
-                                   INSERT INTO
-                                     answers (question_id, body, date, answerer_name, answerer_email, reported, helpfulness)
-                                   VALUES
-                                     ('${questionId}', '${body}', '${date}', '${name}', '${email}', 'f', '0')
-                                   RETURNING answer_id
-                                   )
-                                 INSERT INTO
-                                   answers_photos (answer_id, url)
-                                 VALUES
-                                   ((SELECT answer_id FROM insertAns), unnest(string_to_array(replace(replace(btrim('["website1.com", "website2.com", "website3.com"]', '[]'), '''', ''), '"', ''), ', ')));`;
+    // const postAnswerQueryNoURLs = `INSERT INTO
+    //                                  answers (question_id, body, date, answerer_name, answerer_email, reported, helpfulness)
+    //                                VALUES
+    //                                  ('${questionId}', '${body}', '${date}', '${name}', '${email}', 'f', '0');`;
 
-    // SELECT answer_id FROM insertAns, ${urls};`;
-    // VALUES
-    //   ((SELECT answer_id FROM insertAns), '${urls}')
-    // (SELECT url FROM UNNEST(string_to_array(replace(replace(btrim('${urls}', '[]'), '''', ''), '"', ''), ', ')) url))
-    const postAnswerQuery = (urls) ? postAnswerQueryURLs : postAnswerQueryNoURLs;
+    // const postAnswerQueryURLs = `EXPLAIN ANALYZE WITH insertAns AS (
+    //                                INSERT INTO
+    //                                  answers (question_id, body, date, answerer_name, answerer_email, reported, helpfulness)
+    //                                VALUES
+    //                                  ('${questionId}', '${body}', '${date}', '${name}', '${email}', 'f', '0')
+    //                                RETURNING answer_id
+    //                                )
+    //                              INSERT INTO
+    //                                answers_photos (answer_id, url)
+    //                              VALUES (
+    //                                (SELECT answer_id FROM insertAns),
+    //                                UNNEST(STRING_TO_ARRAY('${urls}', ','))
+    //                              );`;
+
+    // const postAnswerQuery = (urls) ? postAnswerQueryURLs : postAnswerQueryNoURLs;
+    const postAnswerQuery = post.answer(questionId, body, date, name, email, urls);
 
     try {
-      await pool.query(postAnswerQuery);
+      const { rows } = await pool.query(postAnswerQuery);
+      const duration = Date.now() - date;
+      console.log('executed query', { postAnswerQuery, duration, rows: rows.length });
       res.sendStatus(201);
+      // res.status(201).send(rows);
     } catch (err) {
       res.status(404).send(`Error adding answer: ${err.message}`);
     }
-    // const reqInfo = {
-    //   urlParams: req.params.question_id,
-    //   bodyParams: req.body,
-    //   type: 'post an answer',
-    // };
-    // res.send(reqInfo);
   },
 
   /// MARK HELPFUL ///
   markQuestionHelpful: async (req, res) => {
+    const markQuestionHelpfulQuery = `UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id='${req.params.question_id}';`;
+    const start = Date.now();
     try {
-      await pool.query(`UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id='${req.params.question_id}'`);
+      const { rows } = await pool.query(markQuestionHelpfulQuery);
+      const duration = Date.now() - start;
+      console.log('executed query', { markQuestionHelpfulQuery, duration, rows: rows.length });
       res.sendStatus(204);
+      // res.send(rows);
     } catch (err) {
       res.status(404).send(`Error marking question as helpful: ${err.message}`);
     }
   },
 
   markAnswerHelpful: async (req, res) => {
+    const markAnswerHelpfulQuery = `EXPLAIN ANALYZE UPDATE answers SET helpfulness = helpfulness + 1 WHERE answer_id='${req.params.answer_id}';`;
+    const start = Date.now();
     try {
-      await pool.query(`UPDATE answers SET helpfulness = helpfulness + 1 WHERE answer_id='${req.params.answer_id}'`);
+      const { rows } = await pool.query(markAnswerHelpfulQuery);
+      const duration = Date.now() - start;
+      console.log('executed query', { markAnswerHelpfulQuery, duration, rows: rows.length });
       res.sendStatus(204);
+      // res.send(rows);
     } catch (err) {
       res.status(404).send(`Error marking answer as helpful: ${err.message}`);
     }
@@ -203,85 +143,31 @@ module.exports = {
 
   /// REPORT ///
   reportQuestion: async (req, res) => {
+    const reportQuestionQuery = `EXPLAIN ANALYZE UPDATE questions SET reported = true WHERE question_id='${req.params.question_id}';`;
+    const start = Date.now();
     try {
-      await pool.query(`UPDATE questions SET reported = true WHERE question_id='${req.params.question_id}'`);
+      const { rows } = await pool.query(reportQuestionQuery);
+      const duration = Date.now() - start;
+      console.log('executed query', { reportQuestionQuery, duration, rows: rows.length });
       res.sendStatus(204);
+      // res.send(rows);
     } catch (err) {
       res.status(404).send(`Error reporting question: ${err.message}`);
     }
   },
 
   reportAnswer: async (req, res) => {
+    const reportAnswerQuery = `EXPLAIN ANALYZE UPDATE answers SET reported = true WHERE answer_id='${req.params.answer_id}';`;
+    const start = Date.now();
     try {
-      await pool.query(`UPDATE answers SET reported = true WHERE answer_id='${req.params.answer_id}'`);
+      const { rows } = await pool.query(reportAnswerQuery);
+      const duration = Date.now() - start;
+      console.log('executed query', { reportAnswerQuery, duration, rows: rows.length });
       res.sendStatus(204);
+      // res.send(rows);
     } catch (err) {
       res.status(404).send(`Error reporting answer: ${err.message}`);
     }
   },
 
 };
-
-// GET ALL ANSWERS TEST QUERIES
-
-// V3.0 figured out how to return [] for null responses
-// const getAllAnswersQuery = `SELECT
-//                                 answers.answer_id,
-//                                 body,
-//                                 date,
-//                                 answerer_name,
-//                                 helpfulness,
-//                                 COALESCE ((
-//                                   SELECT JSON_AGG(photos)
-//                                   FROM (
-//                                     SELECT id, url FROM answers_photos WHERE answers_photos.answer_id = answers.answer_id
-//                                   ) AS photos
-//                                 ), '[]') AS photos
-//                               FROM
-//                                 answers
-//                               WHERE
-//                                 question_id = '${req.params.question_id}'
-//                               AND
-//                                 reported = false;`;
-
-// V2.0 figured out how to put all rows from answers_photos into photos column
-// const getAllAnswersQuery = `SELECT
-//                               answers.answer_id,
-//                               body,
-//                               date,
-//                               answerer_name,
-//                               helpfulness,
-//                               (
-//                                 SELECT json_agg(photos)
-//                                 FROM (
-//                                   SELECT id, url FROM answers_photos WHERE answers_photos.answer_id = answers.answer_id
-//                                 ) AS photos
-//                               ) AS photos
-//                             FROM
-//                               answers
-//                             WHERE
-//                               question_id = '${req.params.question_id}'
-//                             AND
-//                               reported = false;`;
-
-// V1.0: figuring out how to put all rows from answers_photos into photos column
-// const getAllAnswersQuery = `SELECT
-//                               answers.answer_id,
-//                               body,
-//                               date,
-//                               answerer_name,
-//                               helpfulness,
-//                               (
-//                                 SELECT
-//                                   url
-//                                 FROM
-//                                   answers_photos
-//                                 WHERE
-//                                   answers_photos.answer_id = answers.answer_id
-//                               ) AS photos
-//                             FROM
-//                               answers
-//                             WHERE
-//                               question_id = '${req.params.question_id}'
-//                             AND
-//                               reported = false;`;

@@ -4,6 +4,8 @@ CREATE DATABASE qna;
 
 \c qna;
 
+-- Initiate questions table
+
 CREATE TABLE IF NOT EXISTS questions_temp (
   id integer,
   product_id integer,
@@ -16,7 +18,7 @@ CREATE TABLE IF NOT EXISTS questions_temp (
 );
 
 COPY questions_temp
-FROM '/Users/mtanaka/HackReactor/SDC_data/questions_sample.csv'
+FROM '/Users/mtanaka/HackReactor/SDC_data/questions.csv'
 DELIMITER ','
 CSV HEADER;
 
@@ -35,7 +37,11 @@ INSERT INTO questions (product_id, question_body, question_date, asker_name, ask
 SELECT product_id, body, date_written, asker_name, asker_email, reported, helpful
 FROM questions_temp;
 
+CREATE INDEX idx_questions_productid ON questions(product_id);
+
 DROP TABLE questions_temp;
+
+-- Initiate answers table
 
 CREATE TABLE IF NOT EXISTS answers_temp (
   id integer,
@@ -50,7 +56,7 @@ CREATE TABLE IF NOT EXISTS answers_temp (
 );
 
 COPY answers_temp
-FROM '/Users/mtanaka/HackReactor/SDC_data/answers_sample.csv'
+FROM '/Users/mtanaka/HackReactor/SDC_data/answers.csv'
 DELIMITER ','
 CSV HEADER;
 
@@ -70,7 +76,11 @@ INSERT INTO answers (question_id, body, date, answerer_name, answerer_email, rep
 SELECT question_id, body, date_written, answerer_name, answerer_email, reported, helpful
 FROM answers_temp;
 
+CREATE INDEX idx_answers_questionid ON answers(question_id);
+
 DROP TABLE answers_temp;
+
+-- Initiate answers_photo table
 
 CREATE TABLE IF NOT EXISTS answers_photos_temp (
   id integer,
@@ -80,7 +90,7 @@ CREATE TABLE IF NOT EXISTS answers_photos_temp (
 );
 
 COPY answers_photos_temp
-FROM '/Users/mtanaka/HackReactor/SDC_data/answers_photos_sample.csv'
+FROM '/Users/mtanaka/HackReactor/SDC_data/answers_photos.csv'
 DELIMITER ','
 CSV HEADER;
 
@@ -95,7 +105,10 @@ INSERT INTO answers_photos (answer_id, url)
 SELECT answer_id, photo_url
 FROM answers_photos_temp;
 
+CREATE INDEX idx_answers_photos_answerid ON answers_photos(answer_id);
+
 DROP TABLE answers_photos_temp;
+
 
 
 -- tells us that the output of to_stamp is "timestamp with timezone"
@@ -180,3 +193,7 @@ DROP TABLE answers_photos_temp;
 -- select unnest(string_to_array(replace(replace(btrim('["website1.com", "website2.com", "website3.com"]', '[]'), '''', ''), '"', ''), ', '));
 
 -- select json_array_elements_text(["website1.com", "website2.com", "website3.com"]::jsonb);
+
+-- TO_CHAR (TO_TIMESTAMP(date::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MSTZ')
+-- SELECT TO_CHAR (TO_TIMESTAMP(1646718736738::double precision/1000), 'DD-MM-YYYY"T"HH24:MI:SS.MSOF');
+-- SELECT TO_CHAR (TO_TIMESTAMP(1646718736738::double precision/1000) AT TIME ZONE 'UTC', 'DD-MM-YYYY"T"HH24:MI:SS.MSOF');
