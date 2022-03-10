@@ -13,7 +13,7 @@ const pool = new Pool({
   host: process.env.HOST || 'localhost',
   port: process.env.PORT || 5432,
   user: process.env.USER || 'mtanaka',
-  password: process.env.PASSWORD || '',
+  password: process.env.PASSWORD || null,
   database: process.env.DATABASE || 'qna',
 });
 

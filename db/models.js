@@ -11,11 +11,11 @@ module.exports = {
     const page = (req.query.page) ? req.query.page : 1;
     const getAllQuestionsQuery = get.allQuestions(productId, count, page);
 
-    const start = Date.now();
+    // const start = Date.now();
     try {
       const { rows } = await pool.query(getAllQuestionsQuery);
-      const duration = Date.now() - start;
-      console.log('executed query', { duration, rows: rows.length });
+      // const duration = Date.now() - start;
+      // console.log('executed query', { duration, rows: rows.length });
       const result = {
         product_id: req.query.product_id,
         results: rows,
@@ -32,11 +32,11 @@ module.exports = {
     const page = (req.query.page) ? req.query.page : 1;
     const getAllAnswersQuery = get.allAnswers(questionId, count, page);
 
-    const start = Date.now();
+    // const start = Date.now();
     try {
       const { rows } = await pool.query(getAllAnswersQuery);
-      const duration = Date.now() - start;
-      console.log('executed query', { duration, rows: rows.length });
+      // const duration = Date.now() - start;
+      // console.log('executed query', { duration, rows: rows.length });
       const result = {
         question: req.params.question_id,
         page,
@@ -61,9 +61,10 @@ module.exports = {
     const postQuestionQuery = post.question(productId, body, date, name, email);
 
     try {
-      const { rows } = await pool.query(postQuestionQuery);
-      const duration = Date.now() - date;
-      console.log('executed query', { duration, rows: rows.length });
+      // const { rows } = await pool.query(postQuestionQuery);
+      await pool.query(postQuestionQuery);
+      // const duration = Date.now() - date;
+      // console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(201);
       // res.status(201).send(rows);
     } catch (err) {
@@ -82,9 +83,10 @@ module.exports = {
     const postAnswerQuery = post.answer(questionId, body, date, name, email, urls);
 
     try {
-      const { rows } = await pool.query(postAnswerQuery);
-      const duration = Date.now() - date;
-      console.log('executed query', { duration, rows: rows.length });
+      // const { rows } = await pool.query(postAnswerQuery);
+      await pool.query(postAnswerQuery);
+      // const duration = Date.now() - date;
+      // console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(201);
       // res.status(201).send(rows);
     } catch (err) {
@@ -95,11 +97,12 @@ module.exports = {
   /// MARK HELPFUL ///
   markQuestionHelpful: async (req, res) => {
     const markQuestionHelpfulQuery = `UPDATE questions SET question_helpfulness = question_helpfulness + 1 WHERE question_id='${req.params.question_id}';`;
-    const start = Date.now();
+    // const start = Date.now();
     try {
-      const { rows } = await pool.query(markQuestionHelpfulQuery);
-      const duration = Date.now() - start;
-      console.log('executed query', { duration, rows: rows.length });
+      // const { rows } = await pool.query(markQuestionHelpfulQuery);
+      await pool.query(markQuestionHelpfulQuery);
+      // const duration = Date.now() - start;
+      // console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(204);
       // res.send(rows);
     } catch (err) {
@@ -109,11 +112,12 @@ module.exports = {
 
   markAnswerHelpful: async (req, res) => {
     const markAnswerHelpfulQuery = `EXPLAIN ANALYZE UPDATE answers SET helpfulness = helpfulness + 1 WHERE answer_id='${req.params.answer_id}';`;
-    const start = Date.now();
+    // const start = Date.now();
     try {
-      const { rows } = await pool.query(markAnswerHelpfulQuery);
-      const duration = Date.now() - start;
-      console.log('executed query', { duration, rows: rows.length });
+      // const { rows } = await pool.query(markAnswerHelpfulQuery);
+      await pool.query(markAnswerHelpfulQuery);
+      // const duration = Date.now() - start;
+      // console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(204);
       // res.send(rows);
     } catch (err) {
@@ -124,11 +128,12 @@ module.exports = {
   /// REPORT ///
   reportQuestion: async (req, res) => {
     const reportQuestionQuery = `EXPLAIN ANALYZE UPDATE questions SET reported = true WHERE question_id='${req.params.question_id}';`;
-    const start = Date.now();
+    // const start = Date.now();
     try {
-      const { rows } = await pool.query(reportQuestionQuery);
-      const duration = Date.now() - start;
-      console.log('executed query', { duration, rows: rows.length });
+      // const { rows } = await pool.query(reportQuestionQuery);
+      await pool.query(reportQuestionQuery);
+      // const duration = Date.now() - start;
+      // console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(204);
       // res.send(rows);
     } catch (err) {
@@ -138,11 +143,12 @@ module.exports = {
 
   reportAnswer: async (req, res) => {
     const reportAnswerQuery = `EXPLAIN ANALYZE UPDATE answers SET reported = true WHERE answer_id='${req.params.answer_id}';`;
-    const start = Date.now();
+    // const start = Date.now();
     try {
-      const { rows } = await pool.query(reportAnswerQuery);
-      const duration = Date.now() - start;
-      console.log('executed query', { duration, rows: rows.length });
+      // const { rows } = await pool.query(reportAnswerQuery);
+      await pool.query(reportAnswerQuery);
+      // const duration = Date.now() - start;
+      // console.log('executed query', { duration, rows: rows.length });
       res.sendStatus(204);
       // res.send(rows);
     } catch (err) {
