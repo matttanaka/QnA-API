@@ -2,12 +2,17 @@ const express = require('express');
 
 const router = express.Router();
 const models = require('../db/models');
-// const pool = require('../db/index');
 
-// router.get('/qa/questions', async (req, res) => {
-//   const { rows } = await pool.query('SELECT * FROM questions WHERE id = 1');
-//   res.send(rows[0]);
-// });
+require('dotenv').config();
+
+router.get(`/${process.env.LOADERIO}`, async (req, res) => {
+  try {
+    res.send(process.env.LOADERIO);
+  } catch (err) {
+    res.status(404).send(`Error verifying loader.io target: ${err.message}`);
+  }
+});
+
 router.get('/qa/questions', models.getAllQuestions);
 
 router.get('/qa/questions/:question_id/answers', models.getAllAnswers);
