@@ -111,7 +111,7 @@ module.exports = {
   },
 
   markAnswerHelpful: async (req, res) => {
-    const markAnswerHelpfulQuery = `EXPLAIN ANALYZE UPDATE answers SET helpfulness = helpfulness + 1 WHERE answer_id='${req.params.answer_id}';`;
+    const markAnswerHelpfulQuery = `UPDATE answers SET helpfulness = helpfulness + 1 WHERE answer_id='${req.params.answer_id}';`;
     // const start = Date.now();
     try {
       // const { rows } = await pool.query(markAnswerHelpfulQuery);
@@ -127,7 +127,7 @@ module.exports = {
 
   /// REPORT ///
   reportQuestion: async (req, res) => {
-    const reportQuestionQuery = `EXPLAIN ANALYZE UPDATE questions SET reported = true WHERE question_id='${req.params.question_id}';`;
+    const reportQuestionQuery = `UPDATE questions SET reported = true WHERE question_id='${req.params.question_id}';`;
     // const start = Date.now();
     try {
       // const { rows } = await pool.query(reportQuestionQuery);
@@ -142,7 +142,7 @@ module.exports = {
   },
 
   reportAnswer: async (req, res) => {
-    const reportAnswerQuery = `EXPLAIN ANALYZE UPDATE answers SET reported = true WHERE answer_id='${req.params.answer_id}';`;
+    const reportAnswerQuery = `UPDATE answers SET reported = true WHERE answer_id='${req.params.answer_id}';`;
     // const start = Date.now();
     try {
       // const { rows } = await pool.query(reportAnswerQuery);
