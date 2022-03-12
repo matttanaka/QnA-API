@@ -46,7 +46,6 @@ module.exports = {
       product_id = '${productId}'
     AND
       reported = false
-    ORDER BY questions.question_id
     LIMIT ${count}
     OFFSET ${count * (page - 1)};`
   ),
@@ -78,7 +77,6 @@ module.exports = {
       question_id = '${questionId}'
     AND
       reported = false
-    ORDER BY answers.answer_id
     LIMIT ${count}
     OFFSET ${count * (page - 1)};`
   ),
