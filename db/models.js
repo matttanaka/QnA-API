@@ -32,11 +32,8 @@ module.exports = {
     const page = (req.query.page) ? req.query.page : 1;
     const getAllAnswersQuery = get.allAnswers(questionId, count, page);
 
-    // const start = Date.now();
     try {
       const { rows } = await pool.query(getAllAnswersQuery);
-      // const duration = Date.now() - start;
-      // console.log('executed query', { duration, rows: rows.length });
       const result = {
         question: req.params.question_id,
         page,

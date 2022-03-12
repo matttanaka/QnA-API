@@ -51,35 +51,46 @@ module.exports = {
     OFFSET ${count * (page - 1)};`
   ),
 
+  // allAnswers: (questionId, count, page) => (
+  //   `SELECT
+  //     answers.answer_id,
+  //     body,
+  //     TO_CHAR (
+  //       TO_TIMESTAMP(date::double precision/1000) AT TIME ZONE 'UTC', 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"'
+  //     ) AS date,
+  //     answerer_name,
+  //     helpfulness,
+  //     COALESCE ((
+  //       SELECT JSON_AGG(photos)
+  //       FROM (
+  //         SELECT
+  //           id,
+  //           url
+  //         FROM
+  //           answers_photos
+  //         WHERE
+  //           answers_photos.answer_id = answers.answer_id
+  //       ) AS photos
+  //     ), '[]') AS photos
+  //   FROM
+  //     answers
+  //   WHERE
+  //     question_id = '${questionId}'
+  //   AND
+  //     reported = false
+  //   ORDER BY answers.answer_id
+  //   LIMIT ${count}
+  //   OFFSET ${count * (page - 1)};`
+  // ),
   allAnswers: (questionId, count, page) => (
-    `SELECT
-      answers.answer_id,
-      body,
-      TO_CHAR (
-        TO_TIMESTAMP(date::double precision/1000) AT TIME ZONE 'UTC', 'DD-MM-YYYY"T"HH24:MI:SS.MS"Z"'
-      ) AS date,
-      answerer_name,
-      helpfulness,
-      COALESCE ((
-        SELECT JSON_AGG(photos)
-        FROM (
-          SELECT
-            id,
-            url
-          FROM
-            answers_photos
-          WHERE
-            answers_photos.answer_id = answers.answer_id
-        ) AS photos
-      ), '[]') AS photos
-    FROM
-      answers
-    WHERE
+    `SELECT answers.answer_id, body, date, answerer_name, helpfulness, url
+     FROM answers
+     LEFT JOIN answers_photos
+     ON answers.answer_id = answers_photos.answer_id
+     WHERE
       question_id = '${questionId}'
-    AND
+     AND
       reported = false
-    ORDER BY answers.answer_id
-    LIMIT ${count}
-    OFFSET ${count * (page - 1)};`
+     ORDER BY answers.answer_id;`
   ),
 };
