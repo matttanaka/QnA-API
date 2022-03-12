@@ -33,7 +33,7 @@ module.exports = {
     const getAllAnswersQuery = get.allAnswers(questionId, count, page);
 
     try {
-      const { rows } = await pool.query(getAllAnswersQuery);
+      const { rows } = await pool.query(getAllAnswersQuery, [questionId]);
       const result = {
         question: req.params.question_id,
         page,
@@ -41,7 +41,7 @@ module.exports = {
         results: rows,
       };
 
-      res.json(result);
+      res.send(result);
     } catch (err) {
       res.status(404).send(`Error retrieving answers: ${err.message}`);
     }
