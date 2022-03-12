@@ -82,5 +82,14 @@ module.exports = {
     LIMIT ${count}
     OFFSET ${count * (page - 1)};`
   ),
-
+  // allAnswers: () => (
+  //   `SELECT answers.answer_id, body, date, answerer_name, helpfulness, url
+  //    FROM answers
+  //    LEFT JOIN answers_photos
+  //    ON answers.answer_id = answers_photos.answer_id
+  //    WHERE
+  //     question_id = $1
+  //    AND
+  //     reported = false;`
+  // ),
 };
