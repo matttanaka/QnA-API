@@ -82,4 +82,5 @@ module.exports = {
     LIMIT ${count}
     OFFSET ${count * (page - 1)};`
   ),
+
 };
