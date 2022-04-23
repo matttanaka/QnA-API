@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "nodemon server/index.js -w server -w db",
+    "start": "nodemon server/index.js -w server -w db",
     "createdb": "psql postgres < db/schema.sql",
     "runk6": "k6 run utils/script.js"
   },
