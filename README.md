@@ -38,7 +38,7 @@ DATABASE=
 * [Mark Answer as Helpful]()
 * [Report Answer]()
 
-### List Products
+### List Questions
 `GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
 
 Parameters
