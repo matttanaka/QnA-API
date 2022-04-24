@@ -195,8 +195,8 @@ DATABASE=
 | Parameter  | Type    | Description                                                  |
 | ---------  | ------- | ---------------------------------------------------------    |
 | body       | text    | Text of answer.                                              |
-| name       | text    | Username for question answerer.                              |
-| email      | text    | Email address for question answerer.                         |
+| name       | text    | Username for answerer.                                       |
+| email      | text    | Email address for answerer.                                  |
 | photos.    | [text]  | An array of urls corresponding to images to display.         |
 
 #### Response
@@ -249,7 +249,7 @@ DATABASE=
 
 | Parameter   | Type    | Description                                               |
 | ---------   | ------- | --------------------------------------------------------- |
-| question_id | integer | Required ID of the answer to update.                      |
+| answer_id   | integer | Required ID of the answer to update.                      |
 
 #### Response
 
