@@ -1,8 +1,6 @@
 # Questions & Answers API
 I was tasked with revamping a legacy API of an e-commerce website so that it was optimized for high web traffic. I worked with two other engineers, and each of us focused on a different service of the website. I was responsible for building out the Questions & Answers service, which is a RESTful API serving the questions & answers data for a particular product.
 
-
-
 ## Tech stack
 Express.js/Node.js, PostgreSQL, k6, loader.io, NGINX, AWS EC2, Ubuntu \
 ![image](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
@@ -13,15 +11,16 @@ Express.js/Node.js, PostgreSQL, k6, loader.io, NGINX, AWS EC2, Ubuntu \
 
 ## Installation/Setup
 1. Fork and Clone this repo.
+
 2. Install dependences
 ```
 npm install
 ```
-2. Run server on local environment
+3. Run server on local environment
 ```
 npm start
 ```
-3. Create a .env file in the root directory. Within the file, include the following database parameters:
+4. Create a .env file in the root directory. Within the file, include the following database parameters:
 ```
 HOST=
 PORT=
@@ -29,3 +28,5 @@ USER=
 PASSWORD=
 DATABASE=
 ```
+## Endpoints
+* [List Questions](## Installation/Setup)
