@@ -31,17 +31,17 @@ DATABASE=
 ## Endpoints
 * [List Questions](#list-questions)
 * [List Answers](#list-answers)
-* [Add a Question]()
-* [Add an Answer]()
-* [Mark Question as Helpful]()
-* [Report Question]()
-* [Mark Answer as Helpful]()
-* [Report Answer]()
+* [Add a Question](#add-a-question)
+* [Add an Answer](#add-an-answer)
+* [Mark Question as Helpful](#mark-question-as-helpful)
+* [Report Question](#report-question)
+* [Mark Answer as Helpful](#mark-answer-as-helpful)
+* [Report Answer](#report-answer)
 
 ### List Questions
 `GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
 
-#### Parameters
+#### Query Parameters
 
 | Parameter  | Type    | Description                                               |
 | ---------  | ------- | --------------------------------------------------------- |
@@ -116,6 +116,10 @@ DATABASE=
 | Parameter   | Type    | Description                                               |
 | ---------   | ------- | --------------------------------------------------------- |
 | question_id | integer | Required ID of the question for which answers are needed. |
+
+#### Query Parameters
+| Parameter   | Type    | Description                                               |
+| ---------   | ------- | --------------------------------------------------------- |
 | page        | integer | Selects the page of results to return.  Default 1.        |
 | count       | integer | Specifies how many results per page to return. Default 5. |
 
@@ -164,45 +168,40 @@ DATABASE=
 ### Add a Question
 `POST /qa/questions` Adds a question for the given product.
 
-#### Parameters
+#### Body Parameters
 
-| Parameter  | Type    | Description                                               |
-| ---------  | ------- | --------------------------------------------------------- |
-| body | text | Text of question being asked.    |
-| name       | text | Username for question asker. |
-| email      | text | Email address for question asker. |
-| product_id      | integer | Required ID of the Product for which the question is posted. |
-
-#### Response
-
-`Status: 200 OK`
-
-#### Example Response
-
-```json
-
-```
-
-### 
-`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
-
-#### Parameters
-
-| Parameter  | Type    | Description                                               |
-| ---------  | ------- | --------------------------------------------------------- |
-| product_id | integer | Specifies the product for which to retrieve questions.    |
-| page       | integer | Selects the page of results to return.  Default 1.        |
-| count      | integer | Specifies how many results per page to return. Default 5. |
+| Parameter  | Type    | Description                                                  |
+| ---------  | ------- | ---------------------------------------------------------    |
+| body       | text    | Text of question being asked.                                |
+| name       | text    | Username for question asker.                                 |
+| email      | text    | Email address for question asker.                            |
+| product_id | integer | Required ID of the Product for which the question is posted. |
 
 #### Response
 
-`Status: 200 OK`
+`Status: 201 CREATED`
 
-#### Example Response
+### Add an Answer
+`POST /qa/questions/:question_id/answers` Adds an answer for the given question.
 
-```json
+#### Parameters
 
-```
+| Parameter   | Type    | Description                                               |
+| ---------   | ------- | --------------------------------------------------------- |
+| question_id | integer | Required ID of the question to post the answer for. |
+
+#### Body Parameters
+
+| Parameter  | Type    | Description                                                  |
+| ---------  | ------- | ---------------------------------------------------------    |
+| body       | text    | Text of answer.                                              |
+| name       | text    | Username for question answerer.                              |
+| email      | text    | Email address for question answerer.                         |
+| photos | [text] | An array of urls corresponding to images to display.              |
+
+#### Response
+
+`Status: 201 CREATED`
 
 ### 
 `GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
