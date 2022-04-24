@@ -29,4 +29,4 @@ PASSWORD=
 DATABASE=
 ```
 ## Endpoints
-* [List Questions](## Installation/Setup)
+* [List Questions](##Installation/Setup)
