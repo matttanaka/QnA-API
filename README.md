@@ -188,7 +188,7 @@ DATABASE=
 
 | Parameter   | Type    | Description                                               |
 | ---------   | ------- | --------------------------------------------------------- |
-| question_id | integer | Required ID of the question to post the answer for. |
+| question_id | integer | Required ID of the question to post the answer for.       |
 
 #### Body Parameters
 
@@ -197,92 +197,63 @@ DATABASE=
 | body       | text    | Text of answer.                                              |
 | name       | text    | Username for question answerer.                              |
 | email      | text    | Email address for question answerer.                         |
-| photos | [text] | An array of urls corresponding to images to display.              |
+| photos.    | [text]  | An array of urls corresponding to images to display.         |
 
 #### Response
 
 `Status: 201 CREATED`
 
-### 
-`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
+### Mark Question as Helpful
+`PUT /qa/questions/:question_id/helpful` Updates a question to show it was found helpful.
 
 #### Parameters
 
-| Parameter  | Type    | Description                                               |
-| ---------  | ------- | --------------------------------------------------------- |
-| product_id | integer | Specifies the product for which to retrieve questions.    |
-| page       | integer | Selects the page of results to return.  Default 1.        |
-| count      | integer | Specifies how many results per page to return. Default 5. |
+| Parameter   | Type    | Description                                               |
+| ---------   | ------- | --------------------------------------------------------- |
+| question_id | integer | Required ID of the question to update.                    |
 
 #### Response
 
-`Status: 200 OK`
+`Status: 204 NO CONTENT`
 
-#### Example Response
-
-```json
-
-```
-
-### 
-`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
+### Report Question
+`PUT /qa/questions/:question_id/report` Updates a question to show it was reported. This action does not delete the question, but the question will not be returned in the above GET request.
 
 #### Parameters
 
-| Parameter  | Type    | Description                                               |
-| ---------  | ------- | --------------------------------------------------------- |
-| product_id | integer | Specifies the product for which to retrieve questions.    |
-| page       | integer | Selects the page of results to return.  Default 1.        |
-| count      | integer | Specifies how many results per page to return. Default 5. |
+| Parameter   | Type    | Description                                               |
+| ---------   | ------- | --------------------------------------------------------- |
+| question_id | integer | Required ID of the question to update.                    |
 
 #### Response
 
-`Status: 200 OK`
+`Status: 204 NO CONTENT`
 
-#### Example Response
-
-```json
-
-```
-
-### 
-`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
+### Mark Answer as Helpful
+`PUT /qa/answers/:answer_id/helpful` Updates an answer to show it was found helpful.
 
 #### Parameters
 
-| Parameter  | Type    | Description                                               |
-| ---------  | ------- | --------------------------------------------------------- |
-| product_id | integer | Specifies the product for which to retrieve questions.    |
-| page       | integer | Selects the page of results to return.  Default 1.        |
-| count      | integer | Specifies how many results per page to return. Default 5. |
+| Parameter   | Type    | Description                                               |
+| ---------   | ------- | --------------------------------------------------------- |
+| answer_id   | integer | Required ID of the answer to update.                      |
 
 #### Response
 
-`Status: 200 OK`
+`Status: 204 NO CONTENT`
 
-#### Example Response
-
-```json
-
-```
-
-### 
-`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
+### Report Answer
+`PUT /qa/answers/:answer_id/report` Updates an asnwer to show it was reported. This action does not delete the answer, but the answer will not be returned in the above GET request.
 
 #### Parameters
 
-| Parameter  | Type    | Description                                               |
-| ---------  | ------- | --------------------------------------------------------- |
-| product_id | integer | Specifies the product for which to retrieve questions.    |
-| page       | integer | Selects the page of results to return.  Default 1.        |
-| count      | integer | Specifies how many results per page to return. Default 5. |
+| Parameter   | Type    | Description                                               |
+| ---------   | ------- | --------------------------------------------------------- |
+| question_id | integer | Required ID of the answer to update.                      |
 
 #### Response
 
-`Status: 200 OK`
+`Status: 204 NO CONTENT`
 
-#### Example Response
-
-```json
-
-```
+## Contribution
+* [Matthew Tanaka](https://github.com/matttanaka)
