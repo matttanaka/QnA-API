@@ -9,6 +9,11 @@ Express.js/Node.js, PostgreSQL, k6, loader.io, NGINX, AWS EC2, Ubuntu \
 ![image](https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)
 ![image](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 
+## Achievements
+* Loaded PostgreSQL database with ~25 million data points using an ETL method.
+* Reduced PostgresSQL query times from 33 seconds to 18 ms by implementing indexing.
+* Increased user throughput by 1600% while keeping error rates <1% by horizontally scaling two EC2 t2.micro instances behind an NGINX load-balancer.
+
 ## Installation/Setup
 1. Fork and Clone this repo.
 
