@@ -160,3 +160,130 @@ DATABASE=
   ]
 }
 ```
+
+### Add a Question
+`POST /qa/questions` Adds a question for the given product.
+
+#### Parameters
+
+| Parameter  | Type    | Description                                               |
+| ---------  | ------- | --------------------------------------------------------- |
+| body | text | Text of question being asked.    |
+| name       | text | Username for question asker. |
+| email      | text | Email address for question asker. |
+| product_id      | integer | Required ID of the Product for which the question is posted. |
+
+#### Response
+
+`Status: 200 OK`
+
+#### Example Response
+
+```json
+
+```
+
+### 
+`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
+
+#### Parameters
+
+| Parameter  | Type    | Description                                               |
+| ---------  | ------- | --------------------------------------------------------- |
+| product_id | integer | Specifies the product for which to retrieve questions.    |
+| page       | integer | Selects the page of results to return.  Default 1.        |
+| count      | integer | Specifies how many results per page to return. Default 5. |
+
+#### Response
+
+`Status: 200 OK`
+
+#### Example Response
+
+```json
+
+```
+
+### 
+`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
+
+#### Parameters
+
+| Parameter  | Type    | Description                                               |
+| ---------  | ------- | --------------------------------------------------------- |
+| product_id | integer | Specifies the product for which to retrieve questions.    |
+| page       | integer | Selects the page of results to return.  Default 1.        |
+| count      | integer | Specifies how many results per page to return. Default 5. |
+
+#### Response
+
+`Status: 200 OK`
+
+#### Example Response
+
+```json
+
+```
+
+### 
+`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
+
+#### Parameters
+
+| Parameter  | Type    | Description                                               |
+| ---------  | ------- | --------------------------------------------------------- |
+| product_id | integer | Specifies the product for which to retrieve questions.    |
+| page       | integer | Selects the page of results to return.  Default 1.        |
+| count      | integer | Specifies how many results per page to return. Default 5. |
+
+#### Response
+
+`Status: 200 OK`
+
+#### Example Response
+
+```json
+
+```
+
+### 
+`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
+
+#### Parameters
+
+| Parameter  | Type    | Description                                               |
+| ---------  | ------- | --------------------------------------------------------- |
+| product_id | integer | Specifies the product for which to retrieve questions.    |
+| page       | integer | Selects the page of results to return.  Default 1.        |
+| count      | integer | Specifies how many results per page to return. Default 5. |
+
+#### Response
+
+`Status: 200 OK`
+
+#### Example Response
+
+```json
+
+```
+
+### 
+`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
+
+#### Parameters
+
+| Parameter  | Type    | Description                                               |
+| ---------  | ------- | --------------------------------------------------------- |
+| product_id | integer | Specifies the product for which to retrieve questions.    |
+| page       | integer | Selects the page of results to return.  Default 1.        |
+| count      | integer | Specifies how many results per page to return. Default 5. |
+
+#### Response
+
+`Status: 200 OK`
+
+#### Example Response
+
+```json
+
+```
