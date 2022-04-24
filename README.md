@@ -41,7 +41,7 @@ DATABASE=
 ### List Questions
 `GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
 
-Parameters
+#### Parameters
 
 | Parameter  | Type    | Description                                               |
 | ---------  | ------- | --------------------------------------------------------- |
@@ -49,11 +49,11 @@ Parameters
 | page       | integer | Selects the page of results to return.  Default 1.        |
 | count      | integer | Specifies how many results per page to return. Default 5. |
 
-Response
+#### Response
 
 `Status: 200 OK`
 
-Example Response
+#### Example Response
 
 ```json
 {
@@ -111,7 +111,7 @@ Example Response
 ### List Answers
 `GET /qa/questions/:question_id/answers` Returns answers for a given question. This does not include any reported answers.
 
-Parameters
+#### Parameters
 
 | Parameter   | Type    | Description                                               |
 | ---------   | ------- | --------------------------------------------------------- |
@@ -119,11 +119,11 @@ Parameters
 | page        | integer | Selects the page of results to return.  Default 1.        |
 | count       | integer | Specifies how many results per page to return. Default 5. |
 
-Response
+#### Response
 
 `Status: 200 OK`
 
-Example Response
+#### Example Response
 
 ```json
 {
