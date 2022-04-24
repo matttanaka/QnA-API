@@ -29,4 +29,22 @@ PASSWORD=
 DATABASE=
 ```
 ## Endpoints
-* [List Questions](##Installation/Setup)
+* [List Questions]()
+* [List Answers]()
+* [Add a Question]()
+* [Add an Answer]()
+* [Mark Question as Helpful]()
+* [Report Question]()
+* [Mark Answer as Helpful]()
+* [Report Answer]()
+
+### List Products
+`GET /qa/questions` Retrieves a list of questions for a particular product. This does not include any reported questions.
+
+Parameters
+
+| Parameter  | Type    | Description                                               |
+| ---------  | ------- | --------------------------------------------------------- |
+| product_id | integer | Specifies the product for which to retrieve questions.        |
+| page       | integer | Selects the page of results to return.  Default 1.        |
+| count      | integer | Specifies how many results per page to return. Default 5. |
