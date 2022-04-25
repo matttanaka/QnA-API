@@ -1,5 +1,5 @@
 # Questions & Answers API
-I was tasked with revamping a legacy API of an e-commerce website so that it was optimized for high web traffic. I worked with two other engineers, and each of us focused on a different service of the website. I was responsible for building out the Questions & Answers service, which is a RESTful API serving the questions & answers data for a particular product.
+I was tasked with revamping a legacy API of an e-commerce website so that it was optimized for high web traffic. I worked with two other engineers, and each of us focused on a different service of the website. I was responsible for building out the Questions & Answers service, which is a RESTful API serving all question & answer data for a particular product. This API also allows users to submit questions and answers for a particular product, mark a question or answer as helpful, or report a question or answer to prevent it from being displayed on the product page.
 
 ## Tech stack
 Express.js/Node.js, PostgreSQL, k6, loader.io, NGINX, AWS EC2, Ubuntu \
